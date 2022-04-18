@@ -32,3 +32,11 @@ let decoderPartNumber : Decoder<PartNumber> =
         | Ok partNumber -> Decode.succeed partNumber
         | Error validationMessage -> Decode.fail validationMessage
     )
+
+let decoderBin : Decoder<Bin> =
+    Decode.object (fun get ->
+        {
+            Identifier = get.Required.Field "binIdentifier" decoderBinIdentifier
+            Content = get.Optional.Field "content" decoderPartNumber
+        }
+    )
