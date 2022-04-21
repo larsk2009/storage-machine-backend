@@ -11,9 +11,17 @@ type BinTree =
     | Bin of BinIdentifier * List<BinTree>
     /// A product is represented by its part number.
     | Product of PartNumber
+    | Package of BinTree
 
 /// Determines how many products are contained in all bins of the given bin tree.
 let rec productCount binTree =
     match binTree with
     | Bin (_, productsOrBins) -> List.sumBy productCount productsOrBins
     | Product _ -> 1
+    | Package p -> productCount p
+
+let rec packageTree binTree =
+    match binTree with
+    | Product _ -> Package binTree
+    | Bin (binId, tree) -> Bin(binId, List.map packageTree tree)
+    | Package _ as alreadyPackaged -> alreadyPackaged
